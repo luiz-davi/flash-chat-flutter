@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "494013057843",
+    "project_id": "flash-chat-3d1da",
+    "storage_bucket": "flash-chat-3d1da.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:494013057843:android:ad55e42a7e8d67fc09cc46",
+        "android_client_info": {
+          "package_name": "com.ravengar.flash_chat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "494013057843-dqig44lmld9kvq7m0k943n4mp02324qt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCFrsm929F2qQIKgUaS3USCZDmd-vAlqQk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "494013057843-dqig44lmld9kvq7m0k943n4mp02324qt.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
