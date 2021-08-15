@@ -1,6 +1,8 @@
-// ignore_for_file: avoid_unnecessary_containers, avoid_print
+// ignore_for_file: avoid_print, avoid_function_literals_in_foreach_calls
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flash_chat/core/app_styles.dart';
 import 'package:flutter/material.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -12,7 +14,37 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
+  final _firestore = FirebaseFirestore.instance;
   final _auth = FirebaseAuth.instance;
+  late String messageText;
+  late User loggedInUser;
+
+  @override
+  void initState() {
+    super.initState();
+    getCurrentuser();
+    getMesseges();
+  }
+
+  void messagesStream() async {
+     _firestore.collection("messages").snapshots();
+  }
+
+  void getMesseges() async {
+    final messages =
+        await _firestore.collection("messages").get().then((value) => {
+              value.docs.forEach((element) => {print(element.data())})
+            });
+  }
+
+  void getCurrentuser() {
+    try {
+      // ignore: unused_local_variable
+      loggedInUser = _auth.currentUser!;
+    } catch (e) {
+      print(e);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,21 +68,29 @@ class _ChatScreenState extends State<ChatScreen> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             Container(
-              // decoration: kMessageContainerDecoration,
+              margin: const EdgeInsets.only(top: 5),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   Expanded(
                     child: TextField(
+                      keyboardType: TextInputType.emailAddress,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(color: Colors.amber),
                       onChanged: (value) {
-                        //Do something with the user input.
+                        messageText = value;
                       },
-                      // decoration: kMessageTextFieldDecoration,
+                      decoration: AppStyles.input.copyWith(
+                        hintText: "Type your message here...",
+                      ),
                     ),
                   ),
                   TextButton(
-                    onPressed: () {
-                      //Implement send functionality.
+                    onPressed: () async {
+                      _firestore.collection("messages").add({
+                        "text": messageText,
+                        "sender": loggedInUser.email,
+                      });
                     },
                     child: const Text(
                       'Send',
