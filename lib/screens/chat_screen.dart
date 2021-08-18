@@ -27,14 +27,13 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   void messagesStream() async {
-     _firestore.collection("messages").snapshots();
+    _firestore.collection("messages").snapshots();
   }
 
   void getMesseges() async {
-    final messages =
-        await _firestore.collection("messages").get().then((value) => {
-              value.docs.forEach((element) => {print(element.data())})
-            });
+    await _firestore.collection("messages").get().then((value) => {
+          value.docs.forEach((element) => {print(element.data())})
+        });
   }
 
   void getCurrentuser() {
@@ -72,6 +71,20 @@ class _ChatScreenState extends State<ChatScreen> {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
+                  StreamBuilder<QuerySnapshot>(
+                    stream: _firestore.collection("messeges").snapshots(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        final messeges = snapshot.data!.docs;
+                        List<Text> messegeWidget = [];
+                        for (var messege in messeges) {
+                          final messegeText =
+                              messege.reference.collection('messeges');
+                        }
+                      }
+                      return Container();
+                    },
+                  ),
                   Expanded(
                     child: TextField(
                       keyboardType: TextInputType.emailAddress,
