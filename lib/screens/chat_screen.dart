@@ -14,10 +14,10 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-  final _firestore = FirebaseFirestore.instance;
+  final _firestore = Firestore.instance;
   final _auth = FirebaseAuth.instance;
   late String messageText;
-  late User loggedInUser;
+  late FirebaseUser loggedInUser;
 
   @override
   void initState() {
@@ -31,15 +31,15 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   void getMesseges() async {
-    await _firestore.collection("messages").get().then((value) => {
-          value.docs.forEach((element) => {print(element.data())})
+    await _firestore.collection("messages").getDocuments().then((value) => {
+          value.documents.forEach((element) => {print(element.data)})
         });
   }
 
-  void getCurrentuser() {
+  void getCurrentuser() async{
     try {
       // ignore: unused_local_variable
-      loggedInUser = _auth.currentUser!;
+      loggedInUser = await _auth.currentUser();
     } catch (e) {
       print(e);
     }
@@ -75,11 +75,10 @@ class _ChatScreenState extends State<ChatScreen> {
                     stream: _firestore.collection("messeges").snapshots(),
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
-                        final messeges = snapshot.data!.docs;
+                        final messeges = snapshot.data!.documents;
                         List<Text> messegeWidget = [];
                         for (var messege in messeges) {
-                          final messegeText =
-                              messege.reference.collection('messeges');
+                          final messegeText = messege.data['text'];
                         }
                       }
                       return Container();

@@ -69,9 +69,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   //   showSpinner = true;
                   // });
                   try {
-                    final newUser = await _auth.signInWithEmailAndPassword(
+                    FirebaseUser newUser = await _auth.signInWithEmailAndPassword(
                         email: email, password: password);
-                    if (newUser.user != null) {
+                    if (newUser != null) {
                       Navigator.popAndPushNamed(context, ChatScreen.id);
                     }
                   } catch (e) {
