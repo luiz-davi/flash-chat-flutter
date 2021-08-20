@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flash_chat/core/app_styles.dart';
 import 'package:flash_chat/screens/widgets/button_navigator.dart';
 import 'package:flutter/material.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'chat_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -23,7 +24,9 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
+      body: ModalProgressHUD(
+        inAsyncCall: showSpinner,
+        child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -65,26 +68,28 @@ class _LoginScreenState extends State<LoginScreen> {
                 title: "Log In",
                 decorated: AppStyles.loginDecoration,
                 action: () async {
-                  // setState(() {
-                  //   showSpinner = true;
-                  // });
+                  setState(() {
+                    showSpinner = true;
+                  });
                   try {
-                    FirebaseUser newUser = await _auth.signInWithEmailAndPassword(
-                        email: email, password: password);
+                    FirebaseUser newUser =
+                        await _auth.signInWithEmailAndPassword(
+                            email: email, password: password);
                     if (newUser != null) {
                       Navigator.popAndPushNamed(context, ChatScreen.id);
                     }
+                    setState(() {
+                      showSpinner = false;
+                    });
                   } catch (e) {
                     print(e);
                   }
-                  // setState(() {
-                  //   showSpinner = false;
-                  // });
                 },
               ),
             ],
           ),
         ),
+      ),
     );
   }
 }

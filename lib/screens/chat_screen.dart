@@ -1,8 +1,8 @@
-// ignore_for_file: avoid_print, avoid_function_literals_in_foreach_calls
+// ignore_for_file: avoid_print, avoid_function_literals_in_foreach_calls, import_of_legacy_library_into_null_safe
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flash_chat/core/app_styles.dart';
+import 'package:flash_chat/screens/widgets/message_bubble.dart';
 import 'package:flutter/material.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -23,20 +23,9 @@ class _ChatScreenState extends State<ChatScreen> {
   void initState() {
     super.initState();
     getCurrentuser();
-    getMesseges();
   }
 
-  void messagesStream() async {
-    _firestore.collection("messages").snapshots();
-  }
-
-  void getMesseges() async {
-    await _firestore.collection("messages").getDocuments().then((value) => {
-          value.documents.forEach((element) => {print(element.data)})
-        });
-  }
-
-  void getCurrentuser() async{
+  void getCurrentuser() async {
     try {
       // ignore: unused_local_variable
       loggedInUser = await _auth.currentUser();
@@ -66,46 +55,74 @@ class _ChatScreenState extends State<ChatScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
+            StreamBuilder<QuerySnapshot>(
+                stream: _firestore.collection("messages").snapshots(),
+                builder: (context, snapshot) {
+                  List<MessageBubble> messegeWidgets = [];
+                  if (!snapshot.hasData) {
+                    return const Center(
+                      child: CircularProgressIndicator(
+                        backgroundColor: Colors.lightBlueAccent,
+                      ),
+                    );
+                  }
+                  final messeges = snapshot.data!.documents;
+                  for (var messege in messeges) {
+                    final textMessage = messege.data['text'];
+                    final sender = messege.data['sender'];
+                    final messegeWidget =
+                        MessageBubble(textMessage: textMessage, sender: sender);
+                    messegeWidgets.add(messegeWidget);
+                  }
+                  return Expanded(
+                    child: ListView(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 15, vertical: 20),
+                      children: messegeWidgets,
+                    ),
+                  );
+                }),
             Container(
-              margin: const EdgeInsets.only(top: 5),
+              padding: const EdgeInsets.only(right: 10),
+              decoration: const BoxDecoration(
+                border: Border(
+                  top: BorderSide(color: Colors.lightBlueAccent, width: 2.0),
+                ),
+              ),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  StreamBuilder<QuerySnapshot>(
-                    stream: _firestore.collection("messeges").snapshots(),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        final messeges = snapshot.data!.documents;
-                        List<Text> messegeWidget = [];
-                        for (var messege in messeges) {
-                          final messegeText = messege.data['text'];
-                        }
-                      }
-                      return Container();
-                    },
-                  ),
                   Expanded(
                     child: TextField(
-                      keyboardType: TextInputType.emailAddress,
                       textAlign: TextAlign.center,
                       style: const TextStyle(color: Colors.amber),
                       onChanged: (value) {
                         messageText = value;
                       },
-                      decoration: AppStyles.input.copyWith(
-                        hintText: "Type your message here...",
+                      decoration: const InputDecoration(
+                        contentPadding: EdgeInsets.symmetric(
+                            vertical: 10.0, horizontal: 20.0),
+                        hintText: 'Type your message here...',
+                        hintStyle: TextStyle(color: Colors.blue),
+                        border: InputBorder.none,
                       ),
                     ),
                   ),
                   TextButton(
                     onPressed: () async {
-                      _firestore.collection("messages").add({
-                        "text": messageText,
-                        "sender": loggedInUser.email,
-                      });
+                      if (messageText.isNotEmpty) {
+                        _firestore.collection("messages").add({
+                          "text": messageText,
+                          "sender": loggedInUser.email,
+                        });
+                        messageText = '';
+                      }
                     },
                     child: const Text(
                       'Send',
+                      style: TextStyle(
+                        fontSize: 20,
+                      ),
                       // style: kSendButtonTextStyle,
                     ),
                   ),
