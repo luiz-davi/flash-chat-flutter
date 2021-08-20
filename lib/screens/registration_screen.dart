@@ -2,7 +2,7 @@
 
 import 'package:flash_chat/core/app_styles.dart';
 import 'package:flash_chat/screens/chat_screen.dart';
-import 'package:flash_chat/screens/widgets/button_navigator.dart';
+import 'package:flash_chat/screens/widgets/button_navigator_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';

@@ -4,7 +4,7 @@ import 'package:flash_chat/core/app_styles.dart';
 import 'package:flash_chat/screens/login_screen.dart';
 import 'package:flash_chat/screens/registration_screen.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
-import 'package:flash_chat/screens/widgets/button_navigator.dart';
+import 'package:flash_chat/screens/widgets/button_navigator_widget.dart';
 import 'package:flutter/material.dart';
 
 class WelcomeScreen extends StatefulWidget {

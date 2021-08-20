@@ -2,7 +2,8 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flash_chat/screens/widgets/message_bubble.dart';
+import 'package:flash_chat/screens/widgets/message_bubble_widget.dart';
+import 'package:flash_chat/screens/widgets/stream_messages_widget.dart';
 import 'package:flutter/material.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -14,6 +15,7 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
+  final messageTextController = TextEditingController();
   final _firestore = Firestore.instance;
   final _auth = FirebaseAuth.instance;
   late String messageText;
@@ -55,35 +57,8 @@ class _ChatScreenState extends State<ChatScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            StreamBuilder<QuerySnapshot>(
-                stream: _firestore.collection("messages").snapshots(),
-                builder: (context, snapshot) {
-                  List<MessageBubble> messegeWidgets = [];
-                  if (!snapshot.hasData) {
-                    return const Center(
-                      child: CircularProgressIndicator(
-                        backgroundColor: Colors.lightBlueAccent,
-                      ),
-                    );
-                  }
-                  final messeges = snapshot.data!.documents;
-                  for (var messege in messeges) {
-                    final textMessage = messege.data['text'];
-                    final sender = messege.data['sender'];
-                    final messegeWidget =
-                        MessageBubble(textMessage: textMessage, sender: sender);
-                    messegeWidgets.add(messegeWidget);
-                  }
-                  return Expanded(
-                    child: ListView(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 15, vertical: 20),
-                      children: messegeWidgets,
-                    ),
-                  );
-                }),
+            StreamMessages(),
             Container(
-              padding: const EdgeInsets.only(right: 10),
               decoration: const BoxDecoration(
                 border: Border(
                   top: BorderSide(color: Colors.lightBlueAccent, width: 2.0),
@@ -94,6 +69,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 children: <Widget>[
                   Expanded(
                     child: TextField(
+                      controller: messageTextController,
                       textAlign: TextAlign.center,
                       style: const TextStyle(color: Colors.amber),
                       onChanged: (value) {
@@ -115,6 +91,7 @@ class _ChatScreenState extends State<ChatScreen> {
                           "text": messageText,
                           "sender": loggedInUser.email,
                         });
+                        messageTextController.clear();
                         messageText = '';
                       }
                     },
