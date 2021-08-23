@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flash_chat/screens/widgets/stream_messages_widget.dart';
 import 'package:flutter/material.dart';
 
+late FirebaseUser loggedInUser;
 class ChatScreen extends StatefulWidget {
   static String id = '/chatScreen';
   const ChatScreen({Key? key}) : super(key: key);
@@ -18,7 +19,7 @@ class _ChatScreenState extends State<ChatScreen> {
   final _firestore = Firestore.instance;
   final _auth = FirebaseAuth.instance;
   late String messageText;
-  late FirebaseUser loggedInUser;
+  
 
   @override
   void initState() {
