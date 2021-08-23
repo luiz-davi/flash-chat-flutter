@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_unnecessary_containers, sized_box_for_whitespace, prefer_const_constructors, avoid_print
+// ignore_for_file: avoid_unnecessary_containers, sized_box_for_whitespace, prefer_const_constructors, avoid_print, import_of_legacy_library_into_null_safe
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flash_chat/core/app_styles.dart';
@@ -32,11 +32,13 @@ class _LoginScreenState extends State<LoginScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Hero(
-                tag: 'ray',
-                child: Container(
-                  height: 200,
-                  child: Image.asset("assets/images/logo.png"),
+              Flexible(
+                child: Hero(
+                  tag: 'ray',
+                  child: Container(
+                    height: 200,
+                    child: Image.asset("assets/images/logo.png"),
+                  ),
                 ),
               ),
               SizedBox(height: 15),
