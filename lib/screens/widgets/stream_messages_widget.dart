@@ -23,7 +23,7 @@ class StreamMessages extends StatelessWidget {
               ),
             );
           }
-          final messeges = snapshot.data!.documents;
+          final messeges = snapshot.data!.documents.reversed;
           for (var messege in messeges) {
             final textMessage = messege.data['text'];
             final sender = messege.data['sender'];
@@ -46,6 +46,7 @@ class StreamMessages extends StatelessWidget {
           }
           return Expanded(
             child: ListView(
+              reverse: true,
               padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
               children: messegeWidgets,
             ),
